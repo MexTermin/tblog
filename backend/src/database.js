@@ -1,7 +1,11 @@
 const mongoose = require('mongoose')
+const { mongo_uri } = require('./keys');
 
-mongoose.connect('mongodb://localhost/Blogdb',{
+mongoose.connect(mongo_uri.uri,{
 
+    useCreateIndex: true,
+    useUnifiedTopology: true,
+    useFindAndModify: false,
     useNewUrlParser: true
 })
     .then(db => console.log('DB is connect'))
