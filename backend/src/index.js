@@ -23,7 +23,7 @@ app.use(multer({storage}).single('image'))
 app.use(express.json())
 
 //routes
-app.use("/", require('./routes/index'));
+app.use("/api", require('./routes/index'));
 
 
 //Stactic files
