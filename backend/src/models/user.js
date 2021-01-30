@@ -1,7 +1,7 @@
 const {Schema, model} = require('mongoose');
-const uuidv4 = require("uuid/v4");
+const { v4: uuidv4 } = require('uuid');
 
-let idUnique = uuidv4();
+uuidv4();
 
 const userSchema = new Schema({
     name:{ type: String, required: true},
@@ -9,7 +9,7 @@ const userSchema = new Schema({
     email:{ type: String, required: true},
     password:{ type: String, required: true},
     description:{type: String, },
-    image:{type: String, default: idUnique},
+    image:{type: String, default: uuidv4()},
     createdAt:{ type: Date, default: Date.now}
 
 })
