@@ -1,5 +1,6 @@
 const {Schema, model} = require('mongoose');
 const bcrypt = require('bcrypt-node')
+const {v4: uuidv4 } = require('uuid')
 
 const userSchema = new Schema({
     name:{ type: String, required: true},
@@ -12,11 +13,4 @@ const userSchema = new Schema({
 
 })
 
-userSchema.method.encryptPassword = (password)=>{
-    return bcrypt.hashSync(password, bcrypt.genSaltSync(10))
-}
-
-userSchema.method.comparePassword =function (password) { 
-    return bcrypt.compareSync(password, this.password)
- }
 module.exports = model('users', userSchema)
