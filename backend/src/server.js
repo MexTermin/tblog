@@ -4,15 +4,12 @@ const morgan = require('morgan')
 const multer = require('multer')
 const {v4: uuidv4 } = require('uuid')
 const path = require('path')
-const cons = require('consolidate');
+
 
 const app = express();
 require('./database')
-require('./passport/auth')
 
-app.engine('html', cons.swig)
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'html');
+
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json())
 app.set('port', process.env.PORT || manualPort.PORT);

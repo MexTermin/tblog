@@ -21,7 +21,7 @@ const getUserinfo = async(res, req) => {
         return newUser
     }
     console.log('Se encuentra en la base de datos o no ha escrito la contraseña')
-    res.redirect('signup')
+    res.redirect('/signin')
  }
 
 router.get('/', (req, res, next)=>{
@@ -35,12 +35,12 @@ router.get('/login',(req, res, next)=>{
         text:'login'
     })
 })
-router.get('/signup', (res, req)=>{
+router.get('/signin', (res, req)=>{
     res.json({
-        text:'signup'
+        text:'signin'
     })
 })
-router.post('/signup', async (req, res)=>{
+router.post('/signin', async (req, res)=>{
         getUserinfo(res,req)
             .then(function(result, reject){
                 if(result){
