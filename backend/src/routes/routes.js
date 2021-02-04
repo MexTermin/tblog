@@ -2,7 +2,7 @@ const {Router} = require("express");
 const bcrypt = require('bcrypt-node')
 const router = Router();
 const users = require('../models/user');
-const cons = require("consolidate");
+
 
 const getUserinfo = async(res, req) => { 
     
