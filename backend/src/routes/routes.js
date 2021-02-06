@@ -49,9 +49,8 @@ router.post('/signin',urlencodeParser,[
     check('email', 'Email is not valid')
         .isEmail()
         .normalizeEmail(),
-    check('password', 'Password should be at least 5 chars long or is not alphanumeric')
+    check('password', 'Password should be at least 5 chars long')
         .isLength({min: 5})
-        .isAlphanumeric()
 ],(req, res)=>{
         const error = validationResult(req)
         if(!error.isEmpty()){
@@ -63,9 +62,8 @@ router.post('/signin',urlencodeParser,[
                     result.save()
                     res.redirect('/login')
                 }
-                res.redirect('/signin')
             })
-            .catch(error => console.log(error))
+            
 })
 
 
