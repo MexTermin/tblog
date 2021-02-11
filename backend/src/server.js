@@ -39,6 +39,7 @@ app.use(multer({
 
 //routes
 app.use(require('./routes/routes'));
+app.use("/post",require('./routes/post-routes'));
 
 
 //Stactic files
