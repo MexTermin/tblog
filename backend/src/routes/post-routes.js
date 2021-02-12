@@ -17,7 +17,10 @@ router.route("/new")
     .post(
         urlencodeParser,
         [
-            check("description", "the field description can't empty")
+            check("user_id", "the field user_id is invalid")
+                .exists()
+                .isLength({ min: 20 }),
+            check("likes","the field likes must be a valid number")
                 .exists()
                 .isLength({ min: 1 })
         ],
