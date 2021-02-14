@@ -12,8 +12,8 @@ const getUserinfo = async(res, req) => {
     
     const email = req.body.email;
 
-    const emailFind = await users.findOne({"email": email})
-    if(emailFind == null){
+    const emailFind = await users.findOne({ "email": email })
+    if (emailFind == null) {
         const newUser = new users({
             username: req.body.username,       
             email:req.body.email, 
@@ -25,7 +25,7 @@ const getUserinfo = async(res, req) => {
     }
     console.log('Se encuentra en la base de datos')
     res.redirect('/signin')
- }
+}
 
 router.get('/signin', (res, req)=>{
     res.send('Signin')
@@ -34,7 +34,7 @@ router.get('/signin', (res, req)=>{
 router.post('/signin',urlencodeParser,[
     check('username', 'This username must be 3+ characters long')
         .exists()
-        .isLength({min: 3}),
+        .isLength({ min: 3 }),
     check('email', 'Email is not valid')
         .isEmail()
         .normalizeEmail(),

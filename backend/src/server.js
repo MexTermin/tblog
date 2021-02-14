@@ -7,6 +7,7 @@ const path = require('path')
 const passport = require('passport')
 const cookieParser = require('cookie-parser');
 const session = require('express-session')
+const cors = require('cors')
 
 
 const app = express();  
@@ -26,6 +27,7 @@ app.use(express.json())
 app.set('port', process.env.PORT || manualPort.PORT);
 
 //middleware
+app.use(cors())
 app.use(morgan('dev'))
 const storage = multer.diskStorage({
     destination: path.join(__dirname, '/public/uploads'),
@@ -46,11 +48,13 @@ app.use(multer({
         }
         cb("Error: The file must be a valid image")
     }
-}).single('image'))
-
+}).array('image'))
 
 //routes
 app.use(require('./routes/register'));
+app.use("/post",require('./routes/post-routes'));
+app.use("/public", express.static(`${__dirname}/public/uploads`))
+
 
 //Stactic files
 app.use(express.static( path.join(__dirname, 'public')))
