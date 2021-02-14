@@ -6,7 +6,7 @@ const { check, validationResult } = require('express-validator');
 const urlencodeParser = bodyParser.urlencoded({extended: false})
 
 const passport = require('passport')
-const jwt = require('jsonwebtoken')
+// const jwt = require('jsonwebtoken')
 
 const getUserinfo = async(res, req) => { 
     
@@ -26,9 +26,18 @@ const getUserinfo = async(res, req) => {
     console.log('Se encuentra en la base de datos')
     res.redirect('/signin')
 }
+router.get('/', (req, res, next)=>{
+
+    if(req.isAuthenticated()) return next()
+    res.redirect('/login')
+},(req, res)=>{
+    //si ya iniciamos session mostrar vista
+    res.send('Welcome')
+    //si no hemos iniciado session redirec to login
+})
 
 router.get('/signin', (res, req)=>{
-    res.send('Signin')
+    res.json({message: 'Signin'})
 })
 
 router.post('/signin',urlencodeParser,[
@@ -60,23 +69,27 @@ router.get('/login', (req, res)=>{
     })
 })
 
-router.post('/login', async(req, res, next) =>{
-    passport.authenticate('login', async(err, user, info)=>{
-        try {
-            if(err || !user){
-                const error = new Error('new Error')
-                return next(error)
-            }
-            req.login(user, {session:true}, async(err)=>{
-                if(err) return next(err)
-                const body = {_id: user._id, email: user.email}
-                const token = jwt.sign({user:body}, 'top_ecret')
-                return res.json({token})
-            })
-        } catch (error) {
-            return next(error)
-        }
-    })(req, res, next)
-})
+router.post('/login', 
+    passport.authenticate('login'    , {
+        successRedirect : '/',
+        failureRedirect : '/login'
+    })
+    // passport.authenticate('login', async(err, user, info)=>{
+    //     try {
+    //         if(err || !user){
+    //             const error = new Error('new Error')
+    //             return next(error)
+    //         }
+    //         req.login(user, {session:true}, async(err)=>{
+    //             if(err) return next(err)
+    //             const body = {_id: user._id, email: user.email}
+    //             const token = jwt.sign({user:body}, 'top_ecret')
+    //             return res.json({token})
+    //         })
+    //     } catch (error) {
+    //         return next(error)
+    //     }
+    // })(req, res, next)
+    )
 
 module.exports = router;
