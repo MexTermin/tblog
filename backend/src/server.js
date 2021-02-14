@@ -1,0 +1,52 @@
+const express = require('express');
+const { manualPort } = require('./keys');
+const morgan = require('morgan')
+const multer = require('multer')
+const {v4: uuidv4 } = require('uuid')
+const path = require('path')
+
+
+const app = express();
+require('./database')
+
+
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json())
+app.set('port', process.env.PORT || manualPort.PORT);
+
+//middleware
+app.use(morgan('dev'))
+const storage = multer.diskStorage({
+    destination: path.join(__dirname, '/public/uploads'),
+    filename(req, file, cb){
+        cb(null, new Date().getTime() + uuidv4() + path.extname(file.originalname))
+    }
+})
+app.use(multer({
+    storage,
+    dest: path.join(__dirname, '/public/uploads'),
+    limits: {fileSize:200000},
+    fileFilter: (req, file, cb)=>{
+        const fileTypes = /jpe|jpg|png|gif/;
+        const mimeType = fileTypes.test(file.mimetype);
+        const extName = fileTypes.test(path.extname(file.originalname))
+        if(mimeType && extName){
+            return cb(null, true)
+        }
+        cb("Error: The file must be a valid image")
+    }
+}).single('image'))
+
+//routes
+app.use(require('./routes/routes'));
+
+
+//Stactic files
+app.use(express.static( path.join(__dirname, 'public')))
+
+// server
+app.listen(app.get('port'), () => {
+
+    console.log("server on port ", app.get('port'));
+
+});
