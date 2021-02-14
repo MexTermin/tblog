@@ -1,11 +1,12 @@
 const {Router} = require("express");
-const bcrypt = require('bcrypt-node')
 const router = Router();
 const users = require('../models/user');
 const bodyParser = require('body-parser')
 const { check, validationResult } = require('express-validator');
-
 const urlencodeParser = bodyParser.urlencoded({extended: false})
+
+const passport = require('passport')
+const jwt = require('jsonwebtoken')
 
 const getUserinfo = async(res, req) => { 
     
@@ -16,7 +17,7 @@ const getUserinfo = async(res, req) => {
         const newUser = new users({
             username: req.body.username,       
             email:req.body.email, 
-            password: bcrypt.hashSync(req.body.password, bcrypt.genSaltSync(10)), 
+            password: req.body.password, 
             description:req.body.description,
             image: {file: req.file}
         })
@@ -26,22 +27,10 @@ const getUserinfo = async(res, req) => {
     res.redirect('/signin')
  }
 
-router.get('/', (req, res, next)=>{
-    res.json({
-        text:'frontpage'
-    })
+router.get('/signin', (res, req)=>{
+    res.send('Signin')
 })
 
-router.get('/login',(req, res, next)=>{
-    res.json({
-        text:'login'
-    })
-})
-router.get('/signin', (res, req)=>{
-    res.json({
-        text:'signin'
-    })
-})
 router.post('/signin',urlencodeParser,[
     check('username', 'This username must be 3+ characters long')
         .exists()
@@ -60,11 +49,34 @@ router.post('/signin',urlencodeParser,[
             .then(function(result, reject){
                 if(result){
                     result.save()
-                    res.redirect('/login')
+                     res.redirect('/login')
                 }
-            })
-            
+            }) 
 })
 
+router.get('/login', (req, res)=>{
+    res.json({
+        text: 'Login'
+    })
+})
+
+router.post('/login', async(req, res, next) =>{
+    passport.authenticate('login', async(err, user, info)=>{
+        try {
+            if(err || !user){
+                const error = new Error('new Error')
+                return next(error)
+            }
+            req.login(user, {session:true}, async(err)=>{
+                if(err) return next(err)
+                const body = {_id: user._id, email: user.email}
+                const token = jwt.sign({user:body}, 'top_ecret')
+                return res.json({token})
+            })
+        } catch (error) {
+            return next(error)
+        }
+    })(req, res, next)
+})
 
 module.exports = router;
