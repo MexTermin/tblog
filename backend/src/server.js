@@ -14,9 +14,9 @@ const app = express();
 require('./database')
 require('./passport/auth')
 
-app.use(cookieParser('My-top-secret'))
+app.use(cookieParser('My top secret'))
 app.use(session({
-    secret: 'My-top-secret',
+    secret: 'My top secret',
     resave: true,
     saveUninitialized: true
 }))
