@@ -6,7 +6,7 @@ const { check, validationResult } = require('express-validator');
 const urlencodeParser = bodyParser.urlencoded({extended: false})
 
 const passport = require('passport')
-// const jwt = require('jsonwebtoken')
+const jwt = require('jsonwebtoken')
 
 const getUserinfo = async(res, req) => { 
     
@@ -23,13 +23,16 @@ const getUserinfo = async(res, req) => {
         })
         return newUser
     }
-    console.log('Se encuentra en la base de datos')
-    res.redirect('/signin')
+    return res.json({
+        inDataBase:true,
+        message: 'Se encuentra en la base de datos',
+        status: 422
+    })
 }
 
 router.get('/', (req, res, next)=>{
     if(req.isAuthenticated()) return next()
-    res.render('login')
+    res.redirect('/login')
 },(req, res)=>{
 
     res.send('Welcome')
@@ -52,14 +55,21 @@ router.post('/signin',urlencodeParser,[
 ],(req, res)=>{
         const error = validationResult(req)
         if(!error.isEmpty()){
-            return res.status(422).jsonp(error.array())
+            return res.status(422).jsonp(error)
         }
         getUserinfo(res,req)
-            .then(function(result, reject){
-                if(result){
-                    result.save()
-                     res.redirect('/login')
+            .then(async(newUser, indb)=>{
+                try {
+
+                    if(newUser){
+                        await newUser.save()
+                        return res.redirect('/login')
+                    }
+                    return indb
+                } catch (error) {
+                    return error
                 }
+                
             }) 
 })
 
@@ -69,28 +79,23 @@ router.get('/login', (req, res)=>{
     })
 })
 
-router.post('/login', 
-passport.authenticate('login', {
-    successRedirect : '/',
-    failureRedirect : '/login'
-}))
-// async(req, res, next) =>{
-//     passport.authenticate('login', async(err, user, info)=>{
-//         try {
-//             if(err || !user){
-//                 const error = new Error('new Error')
-//                 return next(error)
-//             }
-//             req.login(user, {session:true}, async(err)=>{
-//                 if(err) return next(err)
-//                 const body = {_id: user._id, email: user.email}
-//                 const token = jwt.sign({user:body}, 'top_ecret')
-//                 return res.json({token})
-//             })
-//         } catch (error) {
-//             return next(error)
-//         }
-//     })(req, res, next)
+router.post('/login', async(req, res, next) =>{
+    passport.authenticate('login', async(err, user, info)=>{
+        try {
+            if(err || !user){
+                const error = new Error('new Error')
+                return next(error)
+            }
+            req.login(user, {session:false}, async(err)=>{
+                if(err) return next(err)
+                const body = {_id: user._id, email: user.email}
+                const token = jwt.sign({user:body}, 'top_ecret')
+                return res.json({token})
+            })
+        } catch (error) {
+            return next(error)
+        }
+    })(req, res, next)
 
-
+})
 module.exports = router;

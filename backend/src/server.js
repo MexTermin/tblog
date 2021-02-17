@@ -4,24 +4,12 @@ const morgan = require('morgan')
 const multer = require('multer')
 const {v4: uuidv4 } = require('uuid')
 const path = require('path')
-const passport = require('passport')
-const cookieParser = require('cookie-parser');
-const session = require('express-session')
 const cors = require('cors')
-
 
 const app = express();  
 require('./database')
 require('./passport/auth')
 
-app.use(cookieParser('My top secret'))
-app.use(session({
-    secret: 'My top secret',
-    resave: true,
-    saveUninitialized: true
-}))
-app.use(passport.initialize())
-app.use(passport.session())
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json())
 app.set('port', process.env.PORT || manualPort.PORT);
