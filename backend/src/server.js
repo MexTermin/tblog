@@ -6,10 +6,9 @@ const {v4: uuidv4 } = require('uuid')
 const path = require('path')
 const cors = require('cors')
 
-
-const app = express();
+const app = express();  
 require('./database')
-
+require('./passport/auth')
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json())
@@ -40,10 +39,9 @@ app.use(multer({
 }).array('image'))
 
 //routes
-app.use(require('./routes/routes'));
+app.use(require('./routes/register'));
 app.use("/post",require('./routes/post-routes'));
 app.use("/public", express.static(`${__dirname}/public/uploads`))
-
 
 
 //Stactic files
