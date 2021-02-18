@@ -40,6 +40,7 @@ app.use(multer({
 
 //routes
 app.use(require('./routes/register'));
+app.use("/user",require('./routes/get_user'))
 app.use("/post",require('./routes/post-routes'));
 app.use("/public", express.static(`${__dirname}/public/uploads`))
 
