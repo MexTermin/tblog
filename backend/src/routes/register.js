@@ -30,18 +30,6 @@ const getUserinfo = async(res, req) => {
     })
 }
 
-router.get('/', (req, res, next)=>{
-    if(req.isAuthenticated()) return next()
-    res.redirect('/login')
-},(req, res)=>{
-
-    res.send('Welcome')
-
-})
-
-router.get('/signin', (res, req)=>{
-    res.send('Signin')
-})
 
 router.post('/signin',urlencodeParser,[
     check('username', 'This username must be 3+ characters long')
@@ -63,7 +51,9 @@ router.post('/signin',urlencodeParser,[
 
                     if(newUser){
                         await newUser.save()
-                        return res.redirect('/login')
+                        return res.send({
+                            ok: 'Save'
+                        })
                     }
                     return indb
                 } catch (error) {
@@ -71,12 +61,6 @@ router.post('/signin',urlencodeParser,[
                 }
                 
             }) 
-})
-
-router.get('/login', (req, res)=>{
-    res.json({
-        text: 'Login'
-    })
 })
 
 router.post('/login', async(req, res, next) =>{
@@ -98,4 +82,5 @@ router.post('/login', async(req, res, next) =>{
     })(req, res, next)
 
 })
+
 module.exports = router;
