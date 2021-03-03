@@ -12,6 +12,19 @@ router.route("/all")
     urlencodeParser,
     userController.getAll
   )
+router.route("/profile/:id")
+  .get(
+    urlencodeParser,
+    [
+      check("id", "the field likes must be a valid ID").isLength({ min: 24 })
+    ],
+    userController.getProfile
+  )
+router.route("/all")
+  .get(
+    urlencodeParser,
+    userController.getAll
+  )
 
 router.route("/:id")
   .get(

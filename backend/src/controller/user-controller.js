@@ -3,6 +3,26 @@ const User = require("../models/user");
 
 const userController = {};
 
+userController.getProfile = async (req, res) => {
+    const error = validationResult(req);
+
+    if (!error.isEmpty()) {
+        return res.json({ message: error.array()[0].msg });
+    }
+    await User.findById(req.params.id)
+        .then((user) => {
+            if (user) {
+                const { username, description } = user
+                return res.json({ username, description })
+            } else {
+                return res.json({ "message": 'user not found' })
+            }
+        })
+        .catch((e) => {
+            return res.json({ "message": e.message })
+        })
+}
+
 userController.getByID = async (req, res) => {
     const error = validationResult(req);
     if (!error.isEmpty()) {
@@ -34,6 +54,7 @@ userController.getAll = async (req, res) => {
             return e.message;
         });
 }
+
 userController.getByEmail = async (req, res) => {
     const error = validationResult(req);
     if (!error.isEmpty()) {
