@@ -6,12 +6,16 @@ const urlencodeParser = bodyParser.urlencoded({ extended: false });
 const router = Router();
 
 router.route("/all")
-    .get((req, res, next) => {
-    res.json({
-        status: 200,
-        text: "all post",
-        });
-    });
+    .get(
+        urlencodeParser,
+        Controller.getAll
+    );
+
+router.route("/:id")
+    .get(
+        urlencodeParser,
+        Controller.getById
+    )
 
 router.route("/new")
     .post(
