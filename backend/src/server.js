@@ -15,11 +15,6 @@ app.use(express.json())
 app.set('port', process.env.PORT || manualPort.PORT);
 
 //middleware
-app.use((req, res)=>{
-    res.status(404).send({
-        message: `Rquest not foond error 404`
-    })
-})
 app.use(cors())
 app.use(morgan('dev'))
 const storage = multer.diskStorage({
