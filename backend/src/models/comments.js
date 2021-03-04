@@ -2,9 +2,9 @@ const {Schema, model} = require('mongoose');
 const { v4: uuidv4 } = require('uuid');
 
 const commentSchema = new Schema({
-   publication_id:{type: String, required: true},
    user_id:{type: String, required: true},
-   descripcion:{type: String},
+   comment :{type: String, required: true},
+   publication :{type: String, required: true},
    createdAt:{ type: Date, default: Date.now}
 })
 

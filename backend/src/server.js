@@ -40,8 +40,13 @@ app.use(multer({
 
 //routes
 app.use(require('./routes/register'));
+app.use(require('./routes/comments'))
+app.use("/user",require('./routes/get_user'))
 app.use("/post",require('./routes/post-routes'));
 app.use("/public", express.static(`${__dirname}/public/uploads`))
+app.use("/*", (req,res)=>{
+    return res.status(404).json({message:'Route Not Found'})
+})
 
 
 //Stactic files

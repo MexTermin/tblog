@@ -2,10 +2,10 @@ const Publication = require('../models/publication')
 const { validationResult } = require('express-validator');
 
 const controller = {}
-const imagesName =  (array) =>{
-    total =""
-    array.forEach(image =>{
-        total+= image.filename+","
+const imagesName = (array) => {
+    total = ""
+    array.forEach(image => {
+        total += image.filename + ","
     })
     return total
 }
@@ -36,6 +36,28 @@ controller.CreatePublication = async (req, res) => {
         return res.status(500).json({ message: e.message })
     }
 
+}
+
+
+controller.getAll = async (req, res) => {
+    try {
+        const result = await Publication.find().limit(20);
+        if (result) {
+            res.json(result);
+        }
+
+    } catch (e) {
+        res.json({ message: e.message });
+    }
+}
+
+controller.getById = async (req, res) => {
+    try {
+        const result = await Publication.findById({ _id: req.params.id });
+        res.json(result);
+    } catch (e) {
+        res.json({ message: e.message });
+    }
 }
 
 module.exports = controller
