@@ -1,36 +1,51 @@
 const { Router } = require("express");
-const router = Router();
-const Comment = require('../models/comments')
-const { check, validationResult } = require('express-validator');
+const { check } = require('express-validator');
 const bodyParser = require('body-parser');
-const urlencodeParser = bodyParser.urlencoded({extended: false});
+const commetController = require("../controller/comment-controller");
 
-const getComment = async (req, res)=>{
-    const newComment = new Comment({
-        user_id: req.body.user_id,
-        comment: req.body.comment
-    })
+const urlencodeParser = bodyParser.urlencoded({ extended: false });
+const router = Router();
 
-    await newComment.save()
-    res.json({
-        message: "Recived"
-    })
-}
 
-router.post('/comment', urlencodeParser,[
-    check('user_id', 'Id is not correct')
-        .exists()
-        .isLength({ min: 24})
-        .isLength({ max: 24}),
-    check('comment', 'Should be more or less than this')
-        .isLength({ min: 1})
-        .isLength({ max: 250}),
-],async (req, res)=>{
-    const error = validationResult(req)
-        if(!error.isEmpty()){
-            return res.status(422).jsonp(error)
-        }
-        await getComment(req, res);        
-})
+router.route('/comment')
+    .post(
+        urlencodeParser,
+        [
+            check('user_id', 'Id is not correct')
+                .exists()
+                .isLength({ min: 24 })
+                .isLength({ max: 24 }),
+            check('publication', 'Publication ID is incorrect')
+                .exists()
+                .isLength({ min: 24 })
+                .isLength({ max: 24 }),
+            check('comment', 'Should be more or less than this')
+                .isLength({ min: 1 })
+                .isLength({ max: 250 }),
+        ], commetController.save
+    )
 
-module.exports =  router;
+router.route("/comment/:publication")
+    .get(
+        urlencodeParser,
+        [
+            check('publication', 'Publication ID is incorrect')
+                .exists()
+                .isLength({ min: 24 })
+                .isLength({ max: 24 }),
+        ],
+        commetController.getComments
+    )
+router.route("/comment/id/:id")
+    .get(
+        urlencodeParser,
+        [
+            check('id', 'ID is incorrect')
+                .exists()
+                .isLength({ min: 24 })
+                .isLength({ max: 24 }),
+        ],
+        commetController.getComment
+    )
+
+module.exports = router;
