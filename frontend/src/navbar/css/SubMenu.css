@@ -1,0 +1,40 @@
+body{
+    background-color: black;
+}
+.glass {
+    background: linear-gradient(to right bottom,hsla(0,0%,100%,.7),hsla(0,0%,100%,.3));
+    -webkit-backdrop-filter: blur(2rem);
+    backdrop-filter: blur(2rem);
+}
+.sub-container{
+    display: inline-block;
+    position: relative;
+    /* bottom: 50px; */
+    right: 12%;
+    
+}
+
+.sub-items {
+    /* width: 100%; */
+    height: 100%;
+    padding: 20px;
+    background-color:rgba(169, 184, 188, 0.7);;
+    align-items: center;
+}
+
+.sub-items a {
+    text-decoration: none;
+    color: black;
+
+  }
+
+.sub-items li{
+    padding: 8px;
+    padding-top: 15px;
+    flex-grow: 1;
+    list-style: none;
+    font-style: normal;
+    text-align: center;
+    font-weight: bold;
+    
+}
