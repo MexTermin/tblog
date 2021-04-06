@@ -1,4 +1,4 @@
-function Publicar() {
+function Post() {
     return(
         <div>
             <h2>Publicar</h2>
@@ -6,4 +6,4 @@ function Publicar() {
     )
 }
 
-export default Publicar;
+export default Post;
